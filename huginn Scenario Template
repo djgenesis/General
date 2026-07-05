@@ -1,0 +1,224 @@
+{
+  "schema_version": 1,
+  "name": "huginn-backup",
+  "description": "This scenario has a few agents to get you started. Feel free to change them or delete them as you see fit!",
+  "source_url": false,
+  "guid": "ee4299225e6531c401a8bbbce0771ce4",
+  "tag_fg_color": "#ffffff",
+  "tag_bg_color": "#70dd5a",
+  "icon": "gear",
+  "exported_at": "2026-07-05T18:21:57Z",
+  "agents": [
+    {
+      "type": "Agents::PostAgent",
+      "name": "Price Changes (Send to Discord)",
+      "disabled": false,
+      "guid": "2f7e296490983a704e72f560e677d03c",
+      "options": {
+        "post_url": "https://discord.com/api/webhooks/1522620263844548728/CRvsWd832K1ShPaVPSJTkW9PyzklRsKDRhTj7lwM5706RlGyh2jmkM8PkiDnI9HBP2U4",
+        "expected_receive_period_in_days": "2",
+        "content_type": "json",
+        "method": "post",
+        "payload": {
+          "content": "🚨 **Price Change Alert!**\n**Product:** {{name}}\n**New Price:** {{price}}\n🔗 **Link:** <{{link}}>"
+        }
+      },
+      "schedule": "never",
+      "keep_events_for": 0,
+      "propagate_immediately": false
+    },
+    {
+      "type": "Agents::PostAgent",
+      "name": "Gemini Daily Digest (send to Discord)",
+      "disabled": false,
+      "guid": "4c053228a8db48f05de2616c6168f82e",
+      "options": {
+        "post_url": "https://discord.com/api/webhooks/1522620263844548728/CRvsWd832K1ShPaVPSJTkW9PyzklRsKDRhTj7lwM5706RlGyh2jmkM8PkiDnI9HBP2U4",
+        "method": "post",
+        "no_merge": "true",
+        "payload": {
+          "payload_json": "{\"content\": \"🎙️ **Το σημερινό σου Daily Digest είναι έτοιμο!**\"}",
+          "files[0]": "data:audio/mp3;base64,{{audio_base64}}"
+        }
+      },
+      "schedule": "never",
+      "keep_events_for": 0,
+      "propagate_immediately": false
+    },
+    {
+      "type": "Agents::WebsiteAgent",
+      "name": "Price Changes (Spitishop.gr)",
+      "disabled": false,
+      "guid": "6ace85817be16b5f8ecd79adcb10c81a",
+      "options": {
+        "expected_update_period_in_days": "2",
+        "url": "https://www.spitishop.gr/20001-%CF%83%CE%B5%CE%BD%CF%84%CF%8C%CE%BD%CE%B9%CE%B1?orderby=price&orderway=asc&%CE%BA%CE%BB%CF%89%CF%83%CF%84%CE%AD%CF%82-%CE%B1%CE%BD%CE%AC-%CE%AF%CE%BD%CF%84%CF%83%CE%B1=300,310,330&%CE%BC%CE%AD%CE%B3%CE%B5%CE%B8%CE%BF%CF%82*=king-size&%CF%84%CF%8D%CF%80%CE%AF%CE%BF%CF%82=%CF%83%CE%B5%CF%84-%CF%83%CE%B5%CE%BD%CF%84%CF%8C%CE%BD%CE%B9%CE%B1",
+        "type": "html",
+        "mode": "on_change",
+        "extract": {
+          "name": {
+            "css": ".prd-list_main .product-name",
+            "value": "normalize-space(.)"
+          },
+          "link": {
+            "css": ".prd-list_main .product-name",
+            "value": "@href"
+          },
+          "price": {
+            "css": ".prd-list_main .prd-price_current",
+            "value": "normalize-space(.)"
+          }
+        }
+      },
+      "schedule": "every_2d",
+      "keep_events_for": 0,
+      "propagate_immediately": false
+    },
+    {
+      "type": "Agents::WebsiteAgent",
+      "name": "Twitter (Get Tweets)",
+      "disabled": false,
+      "guid": "7b5b980bf7ea23dfb0b0e60a92b2d0fa",
+      "options": {
+        "expected_update_period_in_days": "2",
+        "url": [
+          "https://rss.xcancel.com/112Greece/rss",
+          "https://rss.xcancel.com/BNONews/rss"
+        ],
+        "type": "xml",
+        "mode": "on_change",
+        "extract": {
+          "text": {
+            "xpath": "//item/description",
+            "value": "."
+          }
+        }
+      },
+      "schedule": "every_12h",
+      "keep_events_for": 0,
+      "propagate_immediately": false
+    },
+    {
+      "type": "Agents::RssAgent",
+      "name": "Github (Get New Releases)",
+      "disabled": false,
+      "guid": "8100bde6770b2f4b0225b0f14dd4f0e3",
+      "options": {
+        "expected_update_period_in_days": "2",
+        "url": [
+          "https://github.com/NuvioMedia/NuvioTV/releases.atom",
+          "https://github.com/guillevc/yubal/releases.atom"
+        ],
+        "clean": "true"
+      },
+      "schedule": "every_1d",
+      "keep_events_for": 0
+    },
+    {
+      "type": "Agents::EventFormattingAgent",
+      "name": "Combine Multi to One",
+      "disabled": false,
+      "guid": "84e3436c3e2ad10ce9f5e74a04e7515a",
+      "options": {
+        "instructions": {
+          "text_to_summarize": "Ακολουθούν τα σημερινά νέα. Χ: {{text}}. GitHub Update: {{title}}. Αναλυτικά οι αλλαγές: {{description}}."
+        },
+        "mode": "merge",
+        "matchers": []
+      },
+      "keep_events_for": 0,
+      "propagate_immediately": false
+    },
+    {
+      "type": "Agents::PostAgent",
+      "name": "Gemini Daily Digest (Create)",
+      "disabled": false,
+      "guid": "d353e50a60fb4413dfeb8bb5f80d7eb7",
+      "options": {
+        "post_url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={% credential gemini_api_key %}",
+        "method": "post",
+        "content_type": "json",
+        "no_merge": "true",
+        "output_mode": "clean",
+        "emit_events": "true",
+        "parse_body": "true",
+        "payload": {
+          "contents": [
+            {
+              "parts": [
+                {
+                  "text": "Λειτούργησε σαν επαγγελματίας εκφωνητής ειδήσεων. Διάβασε και κάνε μια ροϊκή, καθαρή ακουστική σύνοψη στα Ελληνικά για τα παρακάτω νέα: {{text_to_summarize}}"
+                }
+              ]
+            }
+          ],
+          "config": {
+            "responseModalalities": [
+              "AUDIO"
+            ]
+          }
+        }
+      },
+      "schedule": "never",
+      "keep_events_for": 0,
+      "propagate_immediately": false
+    },
+    {
+      "type": "Agents::WebsiteAgent",
+      "name": "Price Changes (Anemos.gr)",
+      "disabled": false,
+      "guid": "f2898766d3e65cfa12af75f826353035",
+      "options": {
+        "expected_update_period_in_days": "2",
+        "url": "https://anemos.gr/collections/sentonia-king-size-set",
+        "type": "html",
+        "mode": "on_change",
+        "parent_chunks": "//div[contains(@class, 'product-item')]",
+        "extract": {
+          "name": {
+            "xpath": ".//h4[contains(@class, 'product-item__product-title')]/a",
+            "value": "normalize-space(.)"
+          },
+          "link": {
+            "xpath": ".//h4[contains(@class, 'product-item__product-title')]/a",
+            "value": "@href"
+          },
+          "price": {
+            "xpath": ".//p[contains(@class, 'product-item__price')]",
+            "value": "normalize-space(.)"
+          }
+        }
+      },
+      "schedule": "every_2d",
+      "keep_events_for": 0,
+      "propagate_immediately": false
+    }
+  ],
+  "links": [
+    {
+      "source": 2,
+      "receiver": 0
+    },
+    {
+      "source": 3,
+      "receiver": 5
+    },
+    {
+      "source": 4,
+      "receiver": 5
+    },
+    {
+      "source": 5,
+      "receiver": 6
+    },
+    {
+      "source": 6,
+      "receiver": 1
+    },
+    {
+      "source": 7,
+      "receiver": 0
+    }
+  ],
+  "control_links": []
+}
