@@ -164,8 +164,8 @@
               ]
             }
           ],
-          "config": {
-            "responseModalalities": [
+          "generationConfig": {
+            "responseModalities": [
               "AUDIO"
             ]
           }
