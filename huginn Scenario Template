@@ -82,8 +82,8 @@
       "options": {
         "expected_update_period_in_days": "2",
         "url": [
-          "https://rss.xcancel.com/112Greece/rss",
-          "https://rss.xcancel.com/BNONews/rss"
+          "https://nitter.space/search?f=tweets&q=112Greece",
+          "https://nuku.trabun.org/search?f=tweets&q=BNONews"
         ],
         "type": "xml",
         "mode": "on_change",
