@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
-  "name": "huginn-backup",
-  "description": "This scenario has a few agents to get you started. Feel free to change them or delete them as you see fit!",
+  "name": "huginn-backup-updated",
+  "description": "This scenario has been optimized to prevent Gemini API 429 quota errors by using a DigestAgent to combine multiple source events into a single API request.",
   "source_url": false,
   "guid": "ee4299225e6531c401a8bbbce0771ce4",
   "tag_fg_color": "#ffffff",
   "tag_bg_color": "#70dd5a",
   "icon": "gear",
-  "exported_at": "2026-07-05T20:16:28Z",
+  "exported_at": "2026-07-05T23:25:00Z",
   "agents": [
     {
       "type": "Agents::PostAgent",
@@ -127,17 +127,17 @@
       "keep_events_for": 0
     },
     {
-  "type": "Agents::DigestAgent",
-  "name": "2. Combine Multi to One",
-  "disabled": false,
-  "guid": "84e3436c3e2ad10ce9f5e74a04e7515a",
-  "options": {
-    "expected_receive_period_in_days": "2",
-    "recombine": "true"
-  },
-  "schedule": "every_1d",
-  "keep_events_for": 0,
-  "propagate_immediately": false
+      "type": "Agents::DigestAgent",
+      "name": "2. Combine Multi to One",
+      "disabled": false,
+      "guid": "84e3436c3e2ad10ce9f5e74a04e7515a",
+      "options": {
+        "expected_receive_period_in_days": "2",
+        "recombine": "true"
+      },
+      "schedule": "every_1d",
+      "keep_events_for": 0,
+      "propagate_immediately": false
     },
     {
       "type": "Agents::PostAgent",
@@ -157,7 +157,7 @@
             {
               "parts": [
                 {
-                  "text": "Λειτούργησε σαν επαγγελματίας εκφωνητής ειδήσεων. Διάβασε και κάνε μια ροϊκή, καθαρή ακουστική σύνοψη στα Ελληνικά για τα παρακάτω νέα: {{text_to_summarize}}"
+                  "text": "Λειτούργησε σαν επαγγελματίας εκφωνητής ειδήσεων. Διάβασε και κάνε μια ροϊκή, καθαρή ακουστική σύνοψη στα Ελληνικά για τα παρακάτω νέα: {% for event in events %}{% if event.title %} Τίτλος: {{ event.title }}. {% endif %}{% if event.description %} Περιγραφή: {{ event.description }}. {% endif %}{% endfor %}"
                 }
               ]
             }
@@ -220,10 +220,6 @@
     {
       "source": 4,
       "receiver": 5
-    },
-    {
-      "source": 5,
-      "receiver": 0
     },
     {
       "source": 5,
