@@ -7,11 +7,11 @@
   "tag_fg_color": "#ffffff",
   "tag_bg_color": "#70dd5a",
   "icon": "gear",
-  "exported_at": "2026-07-05T20:06:05Z",
+  "exported_at": "2026-07-05T20:16:28Z",
   "agents": [
     {
       "type": "Agents::PostAgent",
-      "name": "Price Changes (Send to Discord)",
+      "name": "2. Price Changes (Send to Discord)",
       "disabled": false,
       "guid": "2f7e296490983a704e72f560e677d03c",
       "options": {
@@ -29,7 +29,7 @@
     },
     {
       "type": "Agents::PostAgent",
-      "name": "Gemini Daily Digest (send to Discord)",
+      "name": "3. Gemini Daily Digest (send to Discord)",
       "disabled": false,
       "guid": "4c053228a8db48f05de2616c6168f82e",
       "options": {
@@ -47,7 +47,7 @@
     },
     {
       "type": "Agents::WebsiteAgent",
-      "name": "Price Changes (Spitishop.gr)",
+      "name": "1. Price Changes (Spitishop.gr)",
       "disabled": false,
       "guid": "6ace85817be16b5f8ecd79adcb10c81a",
       "options": {
@@ -76,7 +76,7 @@
     },
     {
       "type": "Agents::WebsiteAgent",
-      "name": "Twitter (Get Tweets)",
+      "name": "1. Twitter (Get Tweets)",
       "disabled": false,
       "guid": "7b5b980bf7ea23dfb0b0e60a92b2d0fa",
       "options": {
@@ -112,7 +112,7 @@
     },
     {
       "type": "Agents::RssAgent",
-      "name": "Github (Get New Releases)",
+      "name": "1. Github (Get New Releases)",
       "disabled": false,
       "guid": "8100bde6770b2f4b0225b0f14dd4f0e3",
       "options": {
@@ -128,7 +128,7 @@
     },
     {
       "type": "Agents::EventFormattingAgent",
-      "name": "Combine Multi to One",
+      "name": "2. Combine Multi to One",
       "disabled": false,
       "guid": "84e3436c3e2ad10ce9f5e74a04e7515a",
       "options": {
@@ -143,7 +143,7 @@
     },
     {
       "type": "Agents::PostAgent",
-      "name": "Gemini Daily Digest (Create)",
+      "name": "2. Gemini Daily Digest (Create)",
       "disabled": false,
       "guid": "d353e50a60fb4413dfeb8bb5f80d7eb7",
       "options": {
@@ -177,7 +177,7 @@
     },
     {
       "type": "Agents::WebsiteAgent",
-      "name": "Price Changes (Anemos.gr)",
+      "name": "1. Price Changes (Anemos.gr)",
       "disabled": false,
       "guid": "f2898766d3e65cfa12af75f826353035",
       "options": {
