@@ -127,19 +127,17 @@
       "keep_events_for": 0
     },
     {
-      "type": "Agents::EventFormattingAgent",
-      "name": "2. Combine Multi to One",
-      "disabled": false,
-      "guid": "84e3436c3e2ad10ce9f5e74a04e7515a",
-      "options": {
-        "instructions": {
-          "text_to_summarize": "Ακολουθούν τα σημερινά νέα. Χ: {{text}}. GitHub Update: {{title}}. Αναλυτικά οι αλλαγές: {{description}}."
-        },
-        "mode": "merge",
-        "matchers": []
-      },
-      "keep_events_for": 0,
-      "propagate_immediately": false
+  "type": "Agents::DigestAgent",
+  "name": "2. Combine Multi to One",
+  "disabled": false,
+  "guid": "84e3436c3e2ad10ce9f5e74a04e7515a",
+  "options": {
+    "expected_receive_period_in_days": "2",
+    "recombine": "true"
+  },
+  "schedule": "every_1d",
+  "keep_events_for": 0,
+  "propagate_immediately": false
     },
     {
       "type": "Agents::PostAgent",
