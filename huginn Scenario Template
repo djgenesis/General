@@ -7,7 +7,7 @@
   "tag_fg_color": "#ffffff",
   "tag_bg_color": "#70dd5a",
   "icon": "gear",
-  "exported_at": "2026-07-05T18:21:57Z",
+  "exported_at": "2026-07-05T20:06:05Z",
   "agents": [
     {
       "type": "Agents::PostAgent",
@@ -81,16 +81,28 @@
       "guid": "7b5b980bf7ea23dfb0b0e60a92b2d0fa",
       "options": {
         "expected_update_period_in_days": "2",
-        "url": [
-          "https://nitter.space/search?f=tweets&q=112Greece",
-          "https://nuku.trabun.org/search?f=tweets&q=BNONews"
-        ],
         "type": "xml",
+        "url": [
+          "https://rss.app/feeds/wollqinYXFvzhpXY.xml",
+          "https://rss.app/feeds/lac74AJa7fMm0vJv.xml"
+        ],
         "mode": "on_change",
         "extract": {
-          "text": {
+          "title": {
+            "xpath": "//item/title",
+            "value": "string(.)"
+          },
+          "description": {
             "xpath": "//item/description",
-            "value": "."
+            "value": "string(.)"
+          },
+          "url": {
+            "xpath": "//item/link",
+            "value": "string(.)"
+          },
+          "date": {
+            "xpath": "//item/pubDate",
+            "value": "string(.)"
           }
         }
       },
@@ -197,6 +209,10 @@
   "links": [
     {
       "source": 2,
+      "receiver": 5
+    },
+    {
+      "source": 2,
       "receiver": 0
     },
     {
@@ -209,11 +225,19 @@
     },
     {
       "source": 5,
+      "receiver": 0
+    },
+    {
+      "source": 5,
       "receiver": 6
     },
     {
       "source": 6,
       "receiver": 1
+    },
+    {
+      "source": 7,
+      "receiver": 5
     },
     {
       "source": 7,
