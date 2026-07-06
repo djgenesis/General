@@ -7,11 +7,11 @@
   "tag_fg_color": "#ffffff",
   "tag_bg_color": "#70dd5a",
   "icon": "gear",
-  "exported_at": "2026-07-05T23:25:00Z",
+  "exported_at": "2026-07-06T18:35:51Z",
   "agents": [
     {
       "type": "Agents::PostAgent",
-      "name": "[Step_2] Discord Dispatcher (Price Changes Alerts)",
+      "name": "[Step_2] Discord Dispatcher (Text)",
       "disabled": false,
       "guid": "2f7e296490983a704e72f560e677d03c",
       "options": {
@@ -20,7 +20,7 @@
         "content_type": "json",
         "method": "post",
         "payload": {
-          "content": "🚨 **Price Change Alert!**\n**Product:** {{name}}\n**New Price:** {{price}}\n🔗 **Link:** <{{link}}>"
+          "content": "📢 **Daily Summary:**\n{% for ev in events %}- {% if ev.name %}{{ ev.name }}: {{ ev.price }}{% elsif ev.title %}{{ ev.title }}{% else %}New Webhook Event{% endif %}\n{% endfor %}"
         }
       },
       "schedule": "never",
@@ -29,8 +29,8 @@
     },
     {
       "type": "Agents::PostAgent",
-      "name": "[Step_4] Discord Dispatcher (Send Audio Daily Digest)",
-      "disabled": false,
+      "name": "[Step_4] Discord Dispatcher (Audio)",
+      "disabled": true,
       "guid": "4c053228a8db48f05de2616c6168f82e",
       "options": {
         "post_url": "https://discord.com/api/webhooks/1522620263844548728/CRvsWd832K1ShPaVPSJTkW9PyzklRsKDRhTj7lwM5706RlGyh2jmkM8PkiDnI9HBP2U4",
@@ -73,6 +73,21 @@
       "schedule": "every_2d",
       "keep_events_for": 365,
       "propagate_immediately": false
+    },
+    {
+      "type": "Agents::WebhookAgent",
+      "name": "[Step_1] Receive webhook",
+      "disabled": false,
+      "guid": "6ee1431289064186f3bef6d362bda76e",
+      "options": {
+        "secret": "c9f49119-66d4-4e33-bb2d-e2cbaa5a462f",
+        "expected_receive_period_in_days": 1,
+        "payload_path": ".",
+        "event_headers": "",
+        "event_headers_key": "headers",
+        "score_threshold": 0.5
+      },
+      "keep_events_for": 365
     },
     {
       "type": "Agents::WebsiteAgent",
@@ -141,8 +156,8 @@
     },
     {
       "type": "Agents::PostAgent",
-      "name": "[Step_3] AI Generator (Gemini Audio Digest Creation)",
-      "disabled": false,
+      "name": "[Step_3] Gemini Script Generator (Audio Digest Creation)",
+      "disabled": true,
       "guid": "d353e50a60fb4413dfeb8bb5f80d7eb7",
       "options": {
         "post_url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={% credential gemini_api_key %}",
@@ -207,19 +222,15 @@
   "links": [
     {
       "source": 2,
-      "receiver": 5
-    },
-    {
-      "source": 2,
-      "receiver": 0
+      "receiver": 6
     },
     {
       "source": 3,
-      "receiver": 5
+      "receiver": 6
     },
     {
       "source": 4,
-      "receiver": 5
+      "receiver": 6
     },
     {
       "source": 5,
@@ -227,15 +238,19 @@
     },
     {
       "source": 6,
+      "receiver": 0
+    },
+    {
+      "source": 6,
+      "receiver": 7
+    },
+    {
+      "source": 7,
       "receiver": 1
     },
     {
-      "source": 7,
-      "receiver": 5
-    },
-    {
-      "source": 7,
-      "receiver": 0
+      "source": 8,
+      "receiver": 6
     }
   ],
   "control_links": []
