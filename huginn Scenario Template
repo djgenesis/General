@@ -15,7 +15,7 @@
       "disabled": false,
       "guid": "2f7e296490983a704e72f560e677d03c",
       "options": {
-        "post_url": "",
+        "post_url": "{% credential discord_webhook_url %}",
         "expected_receive_period_in_days": "2",
         "content_type": "json",
         "method": "post",
