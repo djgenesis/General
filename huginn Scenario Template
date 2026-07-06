@@ -7,7 +7,7 @@
   "tag_fg_color": "#ffffff",
   "tag_bg_color": "#70dd5a",
   "icon": "gear",
-  "exported_at": "2026-07-06T18:35:51Z",
+  "exported_at": "2026-07-06T18:40:01Z",
   "agents": [
     {
       "type": "Agents::PostAgent",
@@ -20,7 +20,7 @@
         "content_type": "json",
         "method": "post",
         "payload": {
-          "content": "📢 **Daily Summary:**\n{% for ev in events %}- {% if ev.name %}{{ ev.name }}: {{ ev.price }}{% elsif ev.title %}{{ ev.title }}{% else %}New Webhook Event{% endif %}\n{% endfor %}"
+          "content": "📢 **Daily Summary:**\n{% for ev in events %}- {% if ev.name %}{{ ev.name }}: {{ ev.price }}{% elsif ev.title %}{{ ev.title }}{% else %}Webhook Data: {{ ev | json }}{% endif %}\n{% endfor %}"
         }
       },
       "schedule": "never",
