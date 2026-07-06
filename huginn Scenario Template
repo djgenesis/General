@@ -7,7 +7,7 @@
   "tag_fg_color": "#ffffff",
   "tag_bg_color": "#70dd5a",
   "icon": "gear",
-  "exported_at": "2026-07-06T18:41:57Z",
+  "exported_at": "2026-07-06T18:44:50Z",
   "agents": [
     {
       "type": "Agents::PostAgent",
@@ -24,7 +24,7 @@
         }
       },
       "schedule": "never",
-      "keep_events_for": 365,
+      "keep_events_for": 31536000,
       "propagate_immediately": false
     },
     {
@@ -42,7 +42,7 @@
         }
       },
       "schedule": "never",
-      "keep_events_for": 365,
+      "keep_events_for": 31536000,
       "propagate_immediately": false
     },
     {
@@ -71,7 +71,7 @@
         }
       },
       "schedule": "every_2d",
-      "keep_events_for": 365,
+      "keep_events_for": 31536000,
       "propagate_immediately": false
     },
     {
@@ -87,7 +87,7 @@
         "event_headers_key": "headers",
         "score_threshold": 0.5
       },
-      "keep_events_for": 365
+      "keep_events_for": 31536000
     },
     {
       "type": "Agents::WebsiteAgent",
@@ -122,7 +122,7 @@
         }
       },
       "schedule": "every_12h",
-      "keep_events_for": 365,
+      "keep_events_for": 31536000,
       "propagate_immediately": false
     },
     {
@@ -139,7 +139,7 @@
         "clean": "true"
       },
       "schedule": "every_1d",
-      "keep_events_for": 365
+      "keep_events_for": 31536000
     },
     {
       "type": "Agents::DigestAgent",
@@ -151,7 +151,7 @@
         "recombine": "true"
       },
       "schedule": "every_1d",
-      "keep_events_for": 365,
+      "keep_events_for": 31536000,
       "propagate_immediately": false
     },
     {
@@ -185,7 +185,7 @@
         }
       },
       "schedule": "never",
-      "keep_events_for": 365,
+      "keep_events_for": 31536000,
       "propagate_immediately": false
     },
     {
@@ -215,7 +215,7 @@
         }
       },
       "schedule": "every_2d",
-      "keep_events_for": 365,
+      "keep_events_for": 31536000,
       "propagate_immediately": false
     }
   ],
