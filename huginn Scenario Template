@@ -1,17 +1,17 @@
 {
   "schema_version": 1,
-  "name": "huginn-backup",
-  "description": "This scenario has a few agents to get you started. Feel free to change them or delete them as you see fit!",
+  "name": "huginn-backup-updated",
+  "description": "This scenario has been optimized to prevent Gemini API 429 quota errors by using a DigestAgent to combine multiple source events into a single API request.",
   "source_url": false,
   "guid": "ee4299225e6531c401a8bbbce0771ce4",
   "tag_fg_color": "#ffffff",
   "tag_bg_color": "#70dd5a",
   "icon": "gear",
-  "exported_at": "2026-07-06T18:12:55Z",
+  "exported_at": "2026-07-05T23:25:00Z",
   "agents": [
     {
       "type": "Agents::PostAgent",
-      "name": "2. Discord (Send text Alerts)",
+      "name": "[Step_2] Discord Dispatcher (Price Changes Alerts)",
       "disabled": false,
       "guid": "2f7e296490983a704e72f560e677d03c",
       "options": {
@@ -20,17 +20,17 @@
         "content_type": "json",
         "method": "post",
         "payload": {
-          "content": "📢 **New Event**\n```json\n{{ event | pretty_generate }}\n```"
+          "content": "🚨 **Price Change Alert!**\n**Product:** {{name}}\n**New Price:** {{price}}\n🔗 **Link:** <{{link}}>"
         }
       },
       "schedule": "never",
-      "keep_events_for": 0,
+      "keep_events_for": 365,
       "propagate_immediately": false
     },
     {
       "type": "Agents::PostAgent",
-      "name": "3. Gemini Daily Digest (send to Discord)",
-      "disabled": true,
+      "name": "[Step_4] Discord Dispatcher (Send Audio Daily Digest)",
+      "disabled": false,
       "guid": "4c053228a8db48f05de2616c6168f82e",
       "options": {
         "post_url": "https://discord.com/api/webhooks/1522620263844548728/CRvsWd832K1ShPaVPSJTkW9PyzklRsKDRhTj7lwM5706RlGyh2jmkM8PkiDnI9HBP2U4",
@@ -42,12 +42,12 @@
         }
       },
       "schedule": "never",
-      "keep_events_for": 0,
+      "keep_events_for": 365,
       "propagate_immediately": false
     },
     {
       "type": "Agents::WebsiteAgent",
-      "name": "1. Price Changes (Spitishop.gr)",
+      "name": "[Step_1] Web Scraper (Spitishop.gr Bedsheets)",
       "disabled": false,
       "guid": "6ace85817be16b5f8ecd79adcb10c81a",
       "options": {
@@ -71,27 +71,12 @@
         }
       },
       "schedule": "every_2d",
-      "keep_events_for": 0,
+      "keep_events_for": 365,
       "propagate_immediately": false
     },
     {
-      "type": "Agents::WebhookAgent",
-      "name": "1. Receive webhook",
-      "disabled": false,
-      "guid": "6ee1431289064186f3bef6d362bda76e",
-      "options": {
-        "secret": "c9f49119-66d4-4e33-bb2d-e2cbaa5a462f",
-        "expected_receive_period_in_days": 1,
-        "payload_path": ".",
-        "event_headers": "",
-        "event_headers_key": "headers",
-        "score_threshold": 0.5
-      },
-      "keep_events_for": 0
-    },
-    {
       "type": "Agents::WebsiteAgent",
-      "name": "1. Twitter (Get Tweets)",
+      "name": "[Step_1] RSS Scraper (Twitter/X Feeds)",
       "disabled": false,
       "guid": "7b5b980bf7ea23dfb0b0e60a92b2d0fa",
       "options": {
@@ -122,12 +107,12 @@
         }
       },
       "schedule": "every_12h",
-      "keep_events_for": 0,
+      "keep_events_for": 365,
       "propagate_immediately": false
     },
     {
       "type": "Agents::RssAgent",
-      "name": "1. Github (Get New Releases)",
+      "name": "[Step_1] RSS Scraper (GitHub Releases)",
       "disabled": false,
       "guid": "8100bde6770b2f4b0225b0f14dd4f0e3",
       "options": {
@@ -139,29 +124,28 @@
         "clean": "true"
       },
       "schedule": "every_1d",
-      "keep_events_for": 0
+      "keep_events_for": 365
     },
     {
       "type": "Agents::DigestAgent",
-      "name": "2. Combine Multi to One",
+      "name": "[Step_2] Data Aggregator (Combine Multi-Source Events)",
       "disabled": false,
       "guid": "84e3436c3e2ad10ce9f5e74a04e7515a",
       "options": {
-        "message": "{{ events | map: 'message' | join: ',' }}",
         "expected_receive_period_in_days": "2",
-        "retained_events": "0"
+        "recombine": "true"
       },
       "schedule": "every_1d",
-      "keep_events_for": 31536000,
+      "keep_events_for": 365,
       "propagate_immediately": false
     },
     {
       "type": "Agents::PostAgent",
-      "name": "2. Gemini Daily Digest (Create)",
-      "disabled": true,
+      "name": "[Step_3] AI Generator (Gemini Audio Digest Creation)",
+      "disabled": false,
       "guid": "d353e50a60fb4413dfeb8bb5f80d7eb7",
       "options": {
-        "post_url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={% credential gemini_api_key %}",
+        "post_url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={% credential gemini_api_key %}",
         "method": "post",
         "content_type": "json",
         "no_merge": "true",
@@ -173,7 +157,7 @@
             {
               "parts": [
                 {
-                  "text": "Λειτούργησε σαν επαγγελματίας εκφωνητής ειδήσεων. Διάβασε και κάνε μια ροϊκή, καθαρή ακουστική σύνοψη στα Ελληνικά για τα παρακάτω νέα: {% for event in events %} - {{ event.title }} / {{ event.description }} {% endfor %}"
+                  "text": "Λειτούργησε σαν επαγγελματίας εκφωνητής ειδήσεων. Διάβασε και κάνε μια ροϊκή, καθαρή ακουστική σύνοψη στα Ελληνικά για τα παρακάτω νέα: {% for event in events %}{% if event.title %} Τίτλος: {{ event.title }}. {% endif %}{% if event.description %} Περιγραφή: {{ event.description }}. {% endif %}{% endfor %}"
                 }
               ]
             }
@@ -181,24 +165,17 @@
           "generationConfig": {
             "responseModalities": [
               "AUDIO"
-            ],
-            "speechConfig": {
-              "voiceConfig": {
-                "prebuiltVoiceConfig": {
-                  "voiceName": "Puck"
-                }
-              }
-            }
+            ]
           }
         }
       },
       "schedule": "never",
-      "keep_events_for": 0,
+      "keep_events_for": 365,
       "propagate_immediately": false
     },
     {
       "type": "Agents::WebsiteAgent",
-      "name": "1. Price Changes (Anemos.gr)",
+      "name": "[Step_1] Web Scraper (Anemos.gr Bedsheets)",
       "disabled": false,
       "guid": "f2898766d3e65cfa12af75f826353035",
       "options": {
@@ -223,30 +200,26 @@
         }
       },
       "schedule": "every_2d",
-      "keep_events_for": 0,
+      "keep_events_for": 365,
       "propagate_immediately": false
     }
   ],
   "links": [
     {
       "source": 2,
-      "receiver": 0
+      "receiver": 5
     },
     {
       "source": 2,
-      "receiver": 6
+      "receiver": 0
     },
     {
       "source": 3,
-      "receiver": 6
-    },
-    {
-      "source": 3,
-      "receiver": 7
+      "receiver": 5
     },
     {
       "source": 4,
-      "receiver": 6
+      "receiver": 5
     },
     {
       "source": 5,
@@ -254,23 +227,15 @@
     },
     {
       "source": 6,
-      "receiver": 0
-    },
-    {
-      "source": 6,
-      "receiver": 7
-    },
-    {
-      "source": 7,
       "receiver": 1
     },
     {
-      "source": 8,
-      "receiver": 0
+      "source": 7,
+      "receiver": 5
     },
     {
-      "source": 8,
-      "receiver": 6
+      "source": 7,
+      "receiver": 0
     }
   ],
   "control_links": []
