@@ -15,7 +15,7 @@
       "disabled": false,
       "guid": "2f7e296490983a704e72f560e677d03c",
       "options": {
-        "post_url": "https://discord.com/api/webhooks/1522620263844548728/CRvsWd832K1ShPaVPSJTkW9PyzklRsKDRhTj7lwM5706RlGyh2jmkM8PkiDnI9HBP2U4",
+        "post_url": "",
         "expected_receive_period_in_days": "2",
         "content_type": "json",
         "method": "post",
