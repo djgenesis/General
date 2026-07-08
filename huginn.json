@@ -1,17 +1,17 @@
 {
   "schema_version": 1,
-  "name": "huginn-backup-updated",
-  "description": "This scenario has been optimized to prevent Gemini API 429 quota errors by using a DigestAgent to combine multiple source events into a single API request.",
+  "name": "huginn-backup",
+  "description": "Step 1: 6AM / Step 2: 7AM / Step 3: 8AM / Step 4: 9AM\r\n",
   "source_url": false,
   "guid": "ee4299225e6531c401a8bbbce0771ce4",
   "tag_fg_color": "#ffffff",
   "tag_bg_color": "#70dd5a",
   "icon": "gear",
-  "exported_at": "2026-07-06T23:15:37Z",
+  "exported_at": "2026-07-08T17:06:59Z",
   "agents": [
     {
       "type": "Agents::PostAgent",
-      "name": "[Step_3] Discord Dispatcher (Text)",
+      "name": "[Step_4] Discord Dispatcher (Text)",
       "disabled": false,
       "guid": "2f7e296490983a704e72f560e677d03c",
       "options": {
@@ -25,9 +25,9 @@
           "content": "📢 **Daily Summary:**\n🔹 **Tweets & Alerts:**\n{% assign total_tweets = 0 %}{% for ev in events %}{% if ev.title %}{% assign total_tweets = total_tweets | plus: 1 %}{% endif %}{% endfor %}{% assign tweet_count = 0 %}{% for ev in events %}{% if ev.title and tweet_count < 5 %}- [{{ ev.title | truncate: 100 }}]({{ ev.url }})\n{% assign tweet_count = tweet_count | plus: 1 %}{% endif %}{% endfor %}📦 **Websites:**\n{% assign total_retail = 0 %}{% for ev in events %}{% if ev.name or ev.title == nil and ev.name == nil %}{% assign total_retail = total_retail | plus: 1 %}{% endif %}{% endfor %}{% assign retail_count = 0 %}{% for ev in events %}{% if ev.name and retail_count < 5 %}- [{{ ev.name | truncate: 95 }}]({{ ev.link }}): {{ ev.price }}\n{% assign retail_count = retail_count | plus: 1 %}{% elsif ev.title == nil and ev.name == nil and retail_count < 5 %}- ⚠️ Λήφθηκαν νέα Webhook δεδομένα.\n{% assign retail_count = retail_count | plus: 1 %}{% endif %}{% endfor %}{% assign extra_tweets = total_tweets | minus: 5 %}{% if extra_tweets < 0 %}{% assign extra_tweets = 0 %}{% endif %}{% assign extra_retail = total_retail | minus: 5 %}{% if extra_retail < 0 %}{% assign extra_retail = 0 %}{% endif %}{% assign grand_total_extra = extra_tweets | plus: extra_retail %}{% if grand_total_extra > 0 %}- [🔗 ...plus {{ grand_total_extra }} more!](http://192.168.1.180:3001/agents/19/events?return=%2Fagents%2F19%3Freturn%3D%252Fagents%253Fsort%253Dname.asc){% endif %}"
         }
       },
-      "schedule": "never",
+      "schedule": "9am",
       "keep_events_for": 31536000,
-      "propagate_immediately": true
+      "propagate_immediately": false
     },
     {
       "type": "Agents::PostAgent",
@@ -43,7 +43,27 @@
           "files[0]": "data:audio/mp3;base64,{{audio_base64}}"
         }
       },
-      "schedule": "never",
+      "schedule": "9am",
+      "keep_events_for": 31536000,
+      "propagate_immediately": false
+    },
+    {
+      "type": "Agents::PostAgent",
+      "name": "[Step_4] Discord Dispatcher (Gemini Summary)",
+      "disabled": false,
+      "guid": "63c2de1d4d120d19aebe94cc802579b6",
+      "options": {
+        "post_url": "{% credential discord_webhook_url %}",
+        "expected_receive_period_in_days": "2",
+        "content_type": "json",
+        "method": "post",
+        "no_merge": true,
+        "emit_events": true,
+        "payload": {
+          "content": "📢 **Todays Daily Digest (Text Summary):**\n\n{{ body.candidates[0].content.parts[0].text | truncate: 1800 }}\n\n{% if body.candidates[0].content.parts[0].text.size > 1800 %}\n*🔗 [Full Summary](http://192.168.1.180:3001/agents/15/events)*\n{% endif %}"
+        }
+      },
+      "schedule": "9am",
       "keep_events_for": 31536000,
       "propagate_immediately": false
     },
@@ -72,7 +92,7 @@
           }
         }
       },
-      "schedule": "every_2d",
+      "schedule": "6am",
       "keep_events_for": 31536000,
       "propagate_immediately": false
     },
@@ -90,6 +110,55 @@
         "score_threshold": 0.5
       },
       "keep_events_for": 31536000
+    },
+    {
+      "type": "Agents::WebsiteAgent",
+      "name": "[Step_1] RSS Scraper (GitHub Releases)",
+      "disabled": false,
+      "guid": "73123ccf7520738b6ba550462033dcdf",
+      "options": {
+        "expected_update_period_in_days": 2,
+        "url": [
+          "https://github.com/NuvioMedia/NuvioTV/releases.atom",
+          "https://github.com/guillevc/yubal/releases.atom",
+          "https://github.com/eigent-ai/eigent/releases.atom",
+          "https://github.com/eigent-ai/snapotter-hq/releases.atom",
+          "https://github.com/SnapOtter/AzuraCast/releases.atom",
+          "https://github.com/strangerstudios/paid-memberships-pro/releases.atom",
+          "https://github.com/LoredCast/filewizard/releases.atom",
+          "https://github.com/huginn/huginn/releases.atom",
+          "https://github.com/immich-app/immich/releases.atom",
+          "https://github.com/Viren070/AIOStreams/releases.atom",
+          "https://github.com/MetrolistGroup/Metrolist/releases.atom"
+        ],
+        "type": "xml",
+        "mode": "on_change",
+        "extract": {
+          "repo": {
+            "xpath": "(//*[local-name()='entry']/*[local-name()='link'])[1]/@href",
+            "value": "substring-before(substring-after(., 'https://github.com/'), '/releases')"
+          },
+          "title": {
+            "xpath": "(//*[local-name()='entry']/*[local-name()='title'])[1]",
+            "value": "string(.)"
+          },
+          "description": {
+            "xpath": "(//*[local-name()='entry']/*[local-name()='content'])[1]",
+            "value": "string(.)"
+          },
+          "url": {
+            "xpath": "(//*[local-name()='entry']/*[local-name()='link'])[1]",
+            "value": "./@href"
+          },
+          "date": {
+            "xpath": "(//*[local-name()='entry']/*[local-name()='updated'])[1]",
+            "value": "string(.)"
+          }
+        }
+      },
+      "schedule": "6am",
+      "keep_events_for": 31536000,
+      "propagate_immediately": false
     },
     {
       "type": "Agents::WebsiteAgent",
@@ -123,25 +192,9 @@
           }
         }
       },
-      "schedule": "every_1d",
+      "schedule": "6am",
       "keep_events_for": 31536000,
       "propagate_immediately": false
-    },
-    {
-      "type": "Agents::RssAgent",
-      "name": "[Step_1] RSS Scraper (GitHub Releases)",
-      "disabled": false,
-      "guid": "8100bde6770b2f4b0225b0f14dd4f0e3",
-      "options": {
-        "expected_update_period_in_days": "2",
-        "url": [
-          "https://github.com/NuvioMedia/NuvioTV/releases.atom",
-          "https://github.com/guillevc/yubal/releases.atom"
-        ],
-        "clean": "true"
-      },
-      "schedule": "every_1d",
-      "keep_events_for": 31536000
     },
     {
       "type": "Agents::DigestAgent",
@@ -153,14 +206,14 @@
         "expected_receive_period_in_days": "2",
         "retained_events": "0"
       },
-      "schedule": "every_1d",
+      "schedule": "7am",
       "keep_events_for": 31536000,
-      "propagate_immediately": true
+      "propagate_immediately": false
     },
     {
       "type": "Agents::PostAgent",
-      "name": "[Step_3] Gemini Script Generator (Audio Digest Creation)",
-      "disabled": true,
+      "name": "[Step_3] Gemini Summary Generator",
+      "disabled": false,
       "guid": "d353e50a60fb4413dfeb8bb5f80d7eb7",
       "options": {
         "post_url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={% credential gemini_api_key %}",
@@ -175,19 +228,14 @@
             {
               "parts": [
                 {
-                  "text": "Λειτούργησε σαν επαγγελματίας εκφωνητής ειδήσεων. Διάβασε και κάνε μια ροϊκή, καθαρή ακουστική σύνοψη στα Ελληνικά για τα παρακάτω νέα: {% for event in events %}{% if event.title %} Τίτλος: {{ event.title }}. {% endif %}{% if event.description %} Περιγραφή: {{ event.description }}. {% endif %}{% endfor %}"
+                  "text": "You are a news presenter. Take the following data and create a paragraph of no more than 2000 words in Greek. First the X (Twitter) feeds and GitHub releases, then the retail prices. Do not include any introductory comment. Just the data. Data: {% for event in events %}{% if event.title %} Τίτλος: {{ event.title }}. {% endif %}{% if event.description %} Περιγραφή: {{ event.description }}. {% endif %}{% if event.name %} Προϊόν: {{ event.name }} - Τιμή: {{ event.price }}. {% endif %}{% endfor %}"
                 }
               ]
             }
-          ],
-          "generationConfig": {
-            "responseModalities": [
-              "AUDIO"
-            ]
-          }
+          ]
         }
       },
-      "schedule": "never",
+      "schedule": "8am",
       "keep_events_for": 31536000,
       "propagate_immediately": false
     },
@@ -217,31 +265,23 @@
           }
         }
       },
-      "schedule": "every_2d",
+      "schedule": "6am",
       "keep_events_for": 31536000,
       "propagate_immediately": false
     }
   ],
   "links": [
     {
-      "source": 2,
-      "receiver": 6
-    },
-    {
       "source": 3,
-      "receiver": 6
+      "receiver": 7
     },
     {
       "source": 4,
-      "receiver": 6
+      "receiver": 7
     },
     {
       "source": 5,
-      "receiver": 6
-    },
-    {
-      "source": 6,
-      "receiver": 0
+      "receiver": 7
     },
     {
       "source": 6,
@@ -249,11 +289,19 @@
     },
     {
       "source": 7,
-      "receiver": 1
+      "receiver": 8
+    },
+    {
+      "source": 7,
+      "receiver": 0
     },
     {
       "source": 8,
-      "receiver": 6
+      "receiver": 2
+    },
+    {
+      "source": 9,
+      "receiver": 7
     }
   ],
   "control_links": []
